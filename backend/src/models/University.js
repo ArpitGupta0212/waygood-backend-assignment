@@ -16,6 +16,8 @@ const universitySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    fieldOfStudy: [String],
+    intakes: [String],
     partnerType: {
       type: String,
       enum: ["direct", "recruitment-partner", "institution-partner"],

@@ -1,178 +1,251 @@
-﻿# Waygood Study Abroad Candidate Evaluation Starter
+﻿# Waygood Study Abroad Platform — Backend Assignment
 
-This repository is a starter assignment for backend-focused MERN candidates interviewing with Waygood.
+A backend-focused study-abroad platform built with **Node.js, Express.js, MongoDB, and Mongoose**. It helps students discover universities and programs, receive personalized recommendations, and manage application workflows, while supporting counselor access.
 
-Waygood's public website positions the business around helping students discover universities, compare options, plan budgets, and navigate their study-abroad journey with AI-assisted tools and partner networks. This starter mirrors that business context by focusing on student discovery, recommendation, and application tracking.
+## Features
 
-## Business Scenario
+### 1. Authentication and Authorization
+- Student registration and login using JWT authentication.
+- Password hashing with `bcryptjs`.
+- Protected user profile endpoint: `GET /api/auth/me`.
+- Role-based access for `student` and `counselor`.
+- Students can access only their own applications.
+- Application creation uses the authenticated student's identity rather than trusting a client-supplied student ID.
 
-You are joining the engineering team working on a study-abroad platform for students and counselors.
+### 2. University and Program Discovery
+- Filter universities by country, field of study, intake, partner type, and scholarship availability.
+- Search university names, countries, cities, and tags.
+- Filter programs by country, degree level, field, intake, tuition budget, IELTS score, and scholarship availability.
+- Pagination metadata, sorting options, and consistent JSON responses.
 
-The product already has:
+### 3. Personalized Recommendations
+- MongoDB aggregation-based recommendation service.
+- Evaluates student preferences, including destination countries, fields of interest, budget, intake, and IELTS score.
+- Returns ranked program recommendations with match scores and explanations.
 
-- a basic university and program catalog
-- seeded sample data for students, universities, programs, and applications
-- a minimal React dashboard shell
-- starter backend architecture with Express, Mongoose, controllers, services, and middleware
+### 4. Application Workflow
+- Create and list applications.
+- Update application status through authorized counselor access.
+- Validate status transitions.
+- Prevent duplicate applications for the same student, program, and intake using a unique compound index.
+- Maintain a timeline of application status changes.
 
-The product is still missing critical engineering work needed for a real candidate-ready release.
+### 5. Caching and Performance
+- TTL-based in-memory cache for popular universities.
+- Cache responses indicate `hit` or `miss`.
+- MongoDB indexes support common university, program, and application queries.
+- Pagination limits help avoid unnecessarily large result sets.
 
-## Your Assignment
+### 6. Automated Tests
+Jest and Supertest are used to test important API behavior, including:
+- Authentication failures and protected routes.
+- University and program discovery.
+- Recommendation input validation.
+- Application authorization and validation.
+- Duplicate application prevention.
+- Invalid application status transitions.
+- Student application ownership restrictions.
 
-Build on top of this starter and complete the platform features below.
+The current local test run completed successfully with **13 tests passing across 3 test suites**.
 
-### Required Tasks
+## Tech Stack
 
-1. Implement secure authentication
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Tokens (`jsonwebtoken`)
+- `bcryptjs`
+- Jest
+- Supertest
 
-- Complete `POST /api/auth/register`
-- Complete `POST /api/auth/login`
-- Add a protected `GET /api/auth/me`
-- Use JWT-based authentication
-- Store passwords securely using hashing
-- Support roles for `student` and `counselor`
-
-2. Complete advanced university and program discovery
-
-- Extend `GET /api/universities` and `GET /api/programs`
-- Add filtering by country, intake, degree level, budget, scholarship availability, and search term
-- Add pagination metadata and sorting options
-- Make the response format consistent and frontend-friendly
-
-3. Build a recommendation engine using MongoDB aggregation
-
-- Improve `GET /api/recommendations/:studentId`
-- Use MongoDB aggregation to recommend relevant programs for a student
-- Consider preferred countries, budget, field of interest, intake, and IELTS score
-- Return top matches with a short explanation of why each result matched
-
-4. Implement the application workflow
-
-- Complete `POST /api/applications`
-- Complete `PATCH /api/applications/:id/status`
-- Prevent duplicate applications for the same student, program, and intake
-- Enforce valid status transitions
-- Record a timeline/history entry when status changes
-
-5. Add caching and performance improvements
-
-- Cache `GET /api/universities/popular` and/or dashboard summary responses
-- You may use Redis or improve the provided in-memory cache
-- Add or document MongoDB indexes that improve the most important queries
-- Keep performance tradeoffs clear in code comments or README notes
-
-6. Add testing and developer documentation
-
-- Add tests for at least 2 important API flows
-- Include at least 1 edge-case test
-- Update this README with any assumptions, setup steps, and architecture notes needed to review your submission
-
-### Bonus Tasks
-
-- Integrate an AI endpoint for study-plan suggestions, SOP helper prompts, or shortlist summaries
-- Dockerize the backend and database setup
-- Improve the React dashboard to consume your new APIs cleanly
-- Add rate limiting, request logging, or role-based access improvements
-
-## What We Will Evaluate
-
-- Backend architecture and code organization
-- API design, validation, and error handling
-- MongoDB query quality, aggregation usage, and indexing awareness
-- Performance thinking, including caching and response design
-- Code readability, maintainability, and naming
-- Testing depth and practical engineering judgment
-- How well your solution reflects a real study-abroad product workflow
-
-## Suggested Timebox
-
-A strong submission can usually be completed in 6-8 focused hours. We care more about thoughtful engineering tradeoffs than feature volume.
-
-## Suggested Submission Expectations
-
-- Keep the solution realistic and production-minded
-- Favor clean, explainable code over unnecessary complexity
-- If you make assumptions, document them
-- If you skip a bonus feature, that is okay
-- Share your repository, setup instructions, and any sample credentials or environment notes needed to review
-
-## Starter Project Structure
+## Project Structure
 
 ```text
 .
-|-- backend
-|   |-- src
-|   |   |-- config
-|   |   |-- controllers
-|   |   |-- data
-|   |   |-- middleware
-|   |   |-- models
-|   |   |-- routes
-|   |   |-- scripts
-|   |   |-- services
-|   |   `-- utils
-|-- frontend
-|   `-- src
-`-- docs
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── data/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── scripts/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── __tests__/
+│   ├── .env.example
+│   └── package.json
+├── frontend/
+├── docs/
+└── README.md
 ```
 
 ## Getting Started
 
-### 1. Backend setup
+### Prerequisites
+- Node.js and npm
+- MongoDB running locally or an accessible MongoDB instance
+- Git
+
+### 1. Install Dependencies
+
+From the repository root:
 
 ```bash
-cd backend
 npm install
-copy .env.example .env
+```
+
+### 2. Configure Environment Variables
+
+Create `backend/.env` using `backend/.env.example` as a reference.
+
+Configure the MongoDB connection URI, JWT secret, and other variables required by `backend/src/config/env.js`.
+
+Use a strong, private JWT secret. Do not commit `.env` files or real credentials to Git.
+
+### 3. Start MongoDB
+
+Ensure your MongoDB server is running and the configured database URI is reachable.
+
+### 4. Seed Sample Data (Optional)
+
+If you want to initialize the sample dataset, run:
+
+```bash
 npm run seed
-npm run dev
 ```
 
-### 2. Frontend setup
+**Warning:** Review the seed script before running it against an existing database. The current seed workflow clears existing application, program, student, and university records before inserting sample data.
+
+### 5. Start the Backend
+
+From the repository root:
 
 ```bash
-cd frontend
-npm install
-npm run dev
+npm run dev:backend
 ```
 
-On macOS or Linux, use `cp .env.example .env` instead of `copy`.
+The API runs on port `4000` by default, depending on the environment configuration.
 
-## Environment Variables
+### 6. Start the Frontend (Optional)
 
-See `backend/.env.example`.
+From the repository root:
 
-## Seeded Data Included
+```bash
+npm run dev:frontend
+```
 
-The seed script creates sample:
+## API Endpoints
 
-- students with profile preferences
-- universities across key study-abroad destinations
-- programs with tuition, intake, and IELTS requirements
-- applications with mixed statuses
+All endpoints use JSON request and response bodies unless otherwise noted.
+
+| Method | Endpoint | Purpose | Access |
+|---|---|---|---|
+| POST | `/api/auth/register` | Register a student | Public |
+| POST | `/api/auth/login` | Log in and receive a JWT | Public |
+| GET | `/api/auth/me` | Get the authenticated user's profile | Authenticated |
+| GET | `/api/universities` | List, filter, sort, and paginate universities | Public |
+| GET | `/api/universities/popular` | Retrieve popular universities | Public |
+| GET | `/api/programs` | Discover and filter programs | Public |
+| GET | `/api/recommendations/:studentId` | Get program recommendations | Verify route authorization in implementation |
+| GET | `/api/applications` | List applications with optional filters | Authenticated |
+| POST | `/api/applications` | Create an application | Student |
+| PATCH | `/api/applications/:id/status` | Update application status | Counselor |
+
+For protected endpoints, send the JWT in the request header:
+
+```text
+Authorization: Bearer <your-token>
+```
+
+### Example Discovery Requests
+
+```text
+GET /api/universities?country=Canada&page=1&limit=10&sortBy=popular
+GET /api/universities/popular
+GET /api/programs?country=Canada&degreeLevel=master&maxTuition=23000
+GET /api/recommendations/<studentId>
+GET /api/applications?status=under-review
+```
+
+### Application Status Transitions
+
+The application workflow allows the following transitions:
+
+- `draft` → `submitted`
+- `submitted` → `under-review` or `rejected`
+- `under-review` → `accepted` or `rejected`
+- `accepted` and `rejected` are terminal states.
+
+Each successful status update appends an entry to the application timeline.
 
 ## Sample Seed Credentials
 
-After running the seed script, you can use:
+When the sample data has been seeded, the following accounts are available:
 
-- `aarav@example.com` / `Candidate123!`
-- `sara@example.com` / `Candidate123!`
-- `counselor@example.com` / `Candidate123!`
+| Role | Email | Password |
+|---|---|---|
+| Student | `aarav@example.com` | `Candidate123!` |
+| Student | `sara@example.com` | `Candidate123!` |
+| Counselor | `counselor@example.com` | `Candidate123!` |
 
-## Notes For Candidates
+These credentials are for local evaluation only. Never use sample credentials in a production environment.
 
-- Some routes are intentionally incomplete
-- Some services are intentionally simple and should be improved
-- The codebase is structured to show expected engineering direction, not to be finished
-- You can refactor any part of the starter if your approach is better
+## Running Tests
 
-## Candidate-Friendly Deliverables
+From the repository root:
 
-Along with this README, a Word assignment brief is available at:
+```bash
+npm test
+```
 
-- `docs/Waygood_Candidate_Assignment.docx`
+If running from the backend directory:
 
-## Reference Context Used For This Assignment Design
+```bash
+npm test
+```
 
-- Waygood website: student discovery, AI tools, calculators, and partner-university positioning
-- Job description: backend APIs, MongoDB aggregation, performance optimization, caching, and AI integration
+The test suite uses Jest and Supertest. Tests connect to the configured local MongoDB database, so ensure the database is available before running them.
+
+## Database Indexes
+
+The models define indexes for common access patterns, including:
+
+- Student email uniqueness.
+- Program country, university, field, degree level, and tuition.
+- A compound program index on `country`, `degreeLevel`, `field`, and `tuitionFeeUsd`.
+- Application student, program, destination country, intake, and status.
+- A unique compound application index on `student`, `program`, and `intake`.
+
+The unique application index is the database-level safeguard against duplicate applications for the same student, program, and intake.
+
+## Caching and Trade-offs
+
+The popular universities endpoint uses a TTL-based in-memory cache.
+
+**Advantages**
+- Simple to implement and operate.
+- Reduces repeated database reads for popular university data.
+- Supports expiration and explicit cache deletion.
+
+**Limitations**
+- Cache contents are lost when the backend restarts.
+- Cache data is not shared between multiple backend instances.
+- Cache invalidation must be considered if university data changes.
+
+Redis could be introduced if shared, distributed caching is required.
+
+## Assumptions and Limitations
+
+- The platform uses seeded sample data for local evaluation.
+- Student and counselor roles have different permissions.
+- Recommendation scores are rule-based and explainable rather than generated by a machine-learning model.
+- The cache is in-memory rather than distributed.
+- Tests currently cover key API and edge cases, but do not replace a comprehensive production test suite.
+- The frontend remains the starter dashboard unless separately extended.
+
+## Assignment Deliverables
+
+This repository covers authentication, discovery APIs, MongoDB aggregation recommendations, application workflow validation, caching, indexing, and automated tests. Optional extensions such as Redis, Docker, AI-assisted study plans, and an expanded React dashboard can be implemented separately.

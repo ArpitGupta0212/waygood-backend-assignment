@@ -24,6 +24,21 @@ const listUniversities = asyncHandler(async (req, res) => {
   if (country) {
     filters.country = country;
   }
+  const { field, intake } = req.query;
+
+if (field) {
+  filters.fieldOfStudy = {
+    $regex: field,
+    $options: "i",
+  };
+}
+
+if (intake) {
+  filters.intakes = {
+    $regex: intake,
+    $options: "i",
+  };
+}
 
   if (partnerType) {
     filters.partnerType = partnerType;

@@ -6,3 +6,7 @@ dist/
 coverage/
 *.log
 docs/Waygood_Candidate_Assignment.zip
+node_modules/
+.env
+.env.*
+!.env.example

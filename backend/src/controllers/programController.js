@@ -15,6 +15,7 @@ const listPrograms = asyncHandler(async (req, res) => {
     field,
     q,
     maxTuition,
+    minimumIelts,
     scholarshipAvailable,
     sortBy = "relevance",
     page = 1,
@@ -39,11 +40,24 @@ const listPrograms = asyncHandler(async (req, res) => {
     filters.intakes = intake;
   }
 
-  if (maxTuition) {
-    filters.tuitionFeeUsd = { $lte: Number(maxTuition) };
+  if (maxTuition !== undefined && maxTuition !== "") {
+    const budget = Number(maxTuition);
+
+    if (Number.isFinite(budget) && budget >= 0) {
+      filters.tuitionFeeUsd = { $lte: budget };
+    }
+  }
+
+  if (minimumIelts !== undefined && minimumIelts !== "") {
+    const ieltsScore = Number(minimumIelts);
+
+    if (Number.isFinite(ieltsScore) && ieltsScore >= 0) {
+      filters.minimumIelts = { $lte: ieltsScore };
+    }
   }
 
   const scholarshipFlag = parseBoolean(scholarshipAvailable);
+
   if (typeof scholarshipFlag === "boolean") {
     filters.scholarshipAvailable = scholarshipFlag;
   }
@@ -56,13 +70,19 @@ const listPrograms = asyncHandler(async (req, res) => {
     ];
   }
 
-  const pageNumber = Math.max(Number(page), 1);
-  const pageSize = Math.min(Math.max(Number(limit), 1), 50);
+  const pageNumber = Math.max(Number(page) || 1, 1);
+  const pageSize = Math.min(
+    Math.max(Number(limit) || 10, 1),
+    50
+  );
 
   const sortMap = {
     tuitionAsc: { tuitionFeeUsd: 1 },
     tuitionDesc: { tuitionFeeUsd: -1 },
-    relevance: { scholarshipAvailable: -1, tuitionFeeUsd: 1 },
+    relevance: {
+      scholarshipAvailable: -1,
+      tuitionFeeUsd: 1,
+    },
   };
 
   const [items, total] = await Promise.all([
@@ -71,6 +91,7 @@ const listPrograms = asyncHandler(async (req, res) => {
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .lean(),
+
     Program.countDocuments(filters),
   ]);
 

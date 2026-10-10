@@ -1,8 +1,11 @@
-﻿const universities = [
+﻿
+const universities = [
   {
     name: "Heriot-Watt University Dubai",
     country: "UAE",
     city: "Dubai",
+    fieldOfStudy: ["Business Analytics", "Computer Science"],
+    intakes: ["September", "January"],
     partnerType: "institution-partner",
     qsRanking: 256,
     scholarshipAvailable: true,
@@ -14,6 +17,8 @@
     name: "University of Windsor",
     country: "Canada",
     city: "Windsor",
+    fieldOfStudy: ["Computer Science", "Engineering Management"],
+    intakes: ["September", "May", "January"],
     partnerType: "direct",
     qsRanking: 547,
     scholarshipAvailable: true,
@@ -25,6 +30,8 @@
     name: "Conestoga College",
     country: "Canada",
     city: "Kitchener",
+    fieldOfStudy: ["Project Management"],
+    intakes: ["September", "January", "May"],
     partnerType: "recruitment-partner",
     qsRanking: 0,
     scholarshipAvailable: false,
@@ -36,6 +43,8 @@
     name: "Deakin University",
     country: "Australia",
     city: "Melbourne",
+    fieldOfStudy: ["Data Science"],
+    intakes: ["February", "July"],
     partnerType: "direct",
     qsRanking: 233,
     scholarshipAvailable: true,
@@ -47,6 +56,8 @@
     name: "University of Portsmouth",
     country: "UK",
     city: "Portsmouth",
+    fieldOfStudy: ["International Business", "Hospitality"],
+    intakes: ["September", "January"],
     partnerType: "institution-partner",
     qsRanking: 502,
     scholarshipAvailable: true,
